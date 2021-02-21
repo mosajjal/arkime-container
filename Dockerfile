@@ -19,6 +19,30 @@ RUN mkdir -p /data/moloch && make -j16 && make install
 FROM alpine:3.13
 RUN mkdir -p /data/moloch
 COPY --from=0 /data/moloch/ /data/moloch/
-RUN apk add libmaxminddb libmagic libuuid libpcap glib libcurl lua5.3 nghttp2 npm yaml
+RUN apk add libmaxminddb libmagic libuuid libpcap glib libcurl lua5.3 nghttp2 npm yaml bash ethtool jq perl perl-libwww perl-json
+RUN ln -s /usr/sbin/ethtool /sbin/ethtool
 
-ENTRYPOINT ["/bin/sh"]
+COPY entrypoint.sh /data/moloch/
+
+ENV ES_HOST=http://elasticsearch:9200 \
+	INTERFACE=eth0 \
+	CLUSTER_PW=secretpw \
+	ADMIN_PW=supersecretpw \
+	SENSOR=true
+
+RUN chmod +x /data/moloch/*.sh && \
+	chmod +x /data/moloch/db/db.pl /data/moloch/*/*.sh && \
+	cd /data/moloch/viewer && \
+	ln -s /usr/bin/node /data/moloch/bin/node  && \
+	npm update . && \
+	npm install .
+
+ADD config.ini /data/moloch/etc/config.ini
+RUN chmod 755 /data/moloch/etc/config.ini
+
+EXPOSE 8005
+
+WORKDIR /data/moloch
+
+ENTRYPOINT ["./entrypoint.sh"]
+# ENTRYPOINT ["/bin/sh"]
