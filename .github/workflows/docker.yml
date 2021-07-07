@@ -30,7 +30,7 @@ jobs:
       - run: docker push ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/arkime:latest
       - run: docker push ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/arkime:${GITHUB_REF##*/}
 
-    - uses: meeDamian/sync-readme@v1.0.6
-      with:
-        pass: ${{ secrets.DOCKER_PASSWORD }}
-        description: true
+      - uses: meeDamian/sync-readme@v1.0.6
+        with:
+          pass: ${{ secrets.DOCKER_PASSWORD }}
+          description: true
