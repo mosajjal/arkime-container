@@ -139,7 +139,7 @@ general:
       --version=[true|false]                print version and exit (default: false) [$ARKIME_VERSION]
       --autoInit=[true|false]               atuomatically initialize Elastic indices if sequence_v2 and sequence_v1 were not present (default: true) [$ARKIME_AUTOINIT]
       --forceInit=[true|false]              force initialization of Arkime Elastic indices from scratch (default: false) [$ARKIME_FORCEINIT]
-      --createAdminUser=[true|false]        create admin user at startup (default: false) [$ARKIME_CREATEADMINUSER]
+      --createAdminUser=[true|false]        create admin user at startup (default: true) [$ARKIME_CREATEADMINUSER]
       --adminCreds=                         Administrator Credentials (default: admin:arkime) [$ARKIME_ADMINCREDS]
       --esHealthcheckInterval=              Interval to check Elastic avalability (default: 60s) [$ARKIME_ESHEALTHCHECKINTERVAL]
       --viewerCheckInterval=                Interval to check Viewer avalability (default: 60s) [$ARKIME_VIEWERCHECKINTERVAL]
