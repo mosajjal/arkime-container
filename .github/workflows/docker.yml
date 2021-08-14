@@ -27,7 +27,7 @@ jobs:
           context: .
           file: ./Dockerfile
           tags: ${{ env.REGISTRY }}/mosajjal/${{ env.REPO }}:latest
-      - run: docker tag ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ env.REPO }}:latest ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/arki${{ env.REPO }}me:${GITHUB_REF##*/}
+      - run: docker tag ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ env.REPO }}:latest ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ env.REPO }}:${GITHUB_REF##*/}
       - run: docker push ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ env.REPO }}:latest
       - run: docker push ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ env.REPO }}:${GITHUB_REF##*/}
 
