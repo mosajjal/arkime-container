@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"os/exec"
@@ -11,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Jeffail/gabs"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -67,6 +69,24 @@ func handler() error {
 			DownloadFile(ArkimeOptions.GeoLite2ASN, GeneralOptions.GeoLite2ASNURL)
 		}
 	}
+}
+
+func checkElasticIndexExist(indexName string, elasticHost string) bool {
+	url := fmt.Sprintf("%v/%v", elasticHost, indexName)
+	resp, err := http.Get(url)
+	if err != nil {
+		return false
+	}
+	defer resp.Body.Close()
+	bytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return false
+	}
+	jsonParsed, err := gabs.ParseJSON(bytes)
+	if err != nil {
+		return false
+	}
+	return jsonParsed.Search("status").Data() != 404
 }
 
 func initElasticIndices() {
@@ -161,7 +181,11 @@ func main() {
 		// "echo INIT | /data/moloch/db/db.pl $ES_HOST init"
 		initElasticIndices()
 	}
-
+	if GeneralOptions.AutoInit == "true" {
+		if !checkElasticIndexExist(ArkimeOptions.Elasticsearch[0], "sequence_v1") || !checkElasticIndexExist(ArkimeOptions.Elasticsearch[0], "sequence_v2") {
+			initElasticIndices()
+		}
+	}
 	// add admin user
 	if GeneralOptions.CreateAdminUser == "true" {
 		creds := strings.Split(GeneralOptions.AdminCreds, ":")

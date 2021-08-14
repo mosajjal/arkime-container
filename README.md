@@ -137,6 +137,7 @@ general:
       --writeConfig=                        generate an Arkime config file based on current inputs (flags, input config file and environment variables) and write to provided path. Empty input will disable the functionality (default:
                                             /data/moloch/etc/config.ini) [$ARKIME_WRITECONFIG]
       --version=[true|false]                print version and exit (default: false) [$ARKIME_VERSION]
+      --autoInit=[true|false]               atuomatically initialize Elastic indices if sequence_v2 and sequence_v1 were not present (default: true) [$ARKIME_AUTOINIT]
       --forceInit=[true|false]              force initialization of Arkime Elastic indices from scratch (default: false) [$ARKIME_FORCEINIT]
       --createAdminUser=[true|false]        create admin user at startup (default: false) [$ARKIME_CREATEADMINUSER]
       --adminCreds=                         Administrator Credentials (default: admin:arkime) [$ARKIME_ADMINCREDS]
@@ -174,7 +175,7 @@ docker run -it --rm -v $PWD/config.ini:/data/moloch/etc/config.ini -v /data/molo
 `arkime-supervisor` also supports command line arguments as well as Environment variables to set most common commands into an Arkime-compatible `.ini` file on container's startup, so the user won't have to deal with managing an extra `ini` file dynamically.
 
 ```sh
-docker run -it --rm -v /data/moloch/raw:/data/moloch/raw --net host mosajjal/arkime:latest --pcapWriteMethod=null --pcapDir=/tmp/ --passwordSecret=Passw0rd --elasticsearch=http://192.168.11.11:9200 --interface=enp2s0f0
+docker run -it --rm -v /data/moloch/raw:/data/moloch/raw --net host mosajjal/arkime:latest --pcapWriteMethod=null --pcapDir=/tmp/ --passwordSecret=Passw0rd --elasticsearch=http://elasticsearch:9200 --interface=lo --forceInit=true --createAdminUser=true
 ```
 
 
