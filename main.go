@@ -72,21 +72,26 @@ func handler() error {
 }
 
 func checkElasticIndexExist(indexName string, elasticHost string) bool {
+	log.Infof("Checking if index %v exists", indexName)
 	url := fmt.Sprintf("%v/%v", elasticHost, indexName)
 	resp, err := http.Get(url)
 	if err != nil {
+		log.Warnf("error while fetching URL: %v", url)
 		return false
 	}
 	defer resp.Body.Close()
 	bytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		log.Warnf("error while fetching URL: %v", url)
 		return false
 	}
 	jsonParsed, err := gabs.ParseJSON(bytes)
 	if err != nil {
+		log.Warnf("error while parsing URL: %v", url)
 		return false
 	}
-	return jsonParsed.Search("status").Data() != 404
+	log.Infof("Index %v status: %v", indexName, jsonParsed.Path("status").String())
+	return jsonParsed.Path("status").String() != "404"
 }
 
 func initElasticIndices() {
@@ -182,7 +187,7 @@ func main() {
 		initElasticIndices()
 	}
 	if GeneralOptions.AutoInit == "true" {
-		if !checkElasticIndexExist(ArkimeOptions.Elasticsearch[0], "sequence_v1") || !checkElasticIndexExist(ArkimeOptions.Elasticsearch[0], "sequence_v2") {
+		if !checkElasticIndexExist("sequence_v1", ArkimeOptions.Elasticsearch[0]) || !checkElasticIndexExist("sequence_v2", ArkimeOptions.Elasticsearch[0]) {
 			initElasticIndices()
 		}
 	}
