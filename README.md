@@ -179,7 +179,7 @@ docker run -it --rm -v /data/moloch/raw:/data/moloch/raw --net host mosajjal/ark
 ```
 
 
-by default, `arkime-supervisor` will download 4 files on startup: `ipv4-address-space.csv`, `manuf`, `GeoLite2-Country.mmdb` and `GeoLite2-ASN.mmdb`. `ipv4-address-space.csv`, `manuf` are considered static and not subject to many changes, so `arkime-supervisor` will not try to keep them up to date automatically, but `GeoLite2-Country.mmdb` and `GeoLite2-ASN.mmdb` can be re-fetched by setting geoLiteRefreshInterval to anything longer than 1s. Default is 1 week (168 hours). 
+by default, `arkime-supervisor` will download 4 files on startup: `ipv4-address-space.csv`, `manuf`, `GeoLite2-Country.mmdb` and `GeoLite2-ASN.mmdb`. `ipv4-address-space.csv`, `manuf` are considered static and not subject to many changes, so `arkime-supervisor` will not try to keep them up to date automatically, but `GeoLite2-Country.mmdb` and `GeoLite2-ASN.mmdb` can be re-fetched by setting geoLiteRefreshInterval to any positive time duration. Default is 1 week (168 hours). 
 
 `arkime-supervisor` will check on viewer and capture process every 5 seconds to see if they're still running and if they've exited, it tries to restart them. 
 
