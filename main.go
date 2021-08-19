@@ -14,6 +14,7 @@ import (
 
 	"github.com/Jeffail/gabs"
 	log "github.com/sirupsen/logrus"
+	easy "github.com/t-tomalak/logrus-easy-formatter"
 )
 
 var exiting chan bool
@@ -21,7 +22,9 @@ var exiting chan bool
 var PATH_PREFIX = "/data/moloch"
 
 var captureCmd *exec.Cmd
+var captureLog = log.New()
 var viewerCmd *exec.Cmd
+var viewerLog = log.New()
 
 func handleInterrupt(done chan bool) {
 	c := make(chan os.Signal, 1)
@@ -135,21 +138,29 @@ func configureInterfaces() {
 }
 
 func runViewer() error {
+	viewerLog.Formatter = &easy.Formatter{
+		TimestampFormat: "2006-01-02 15:04:05",
+		LogFormat:       "[VIEWER] : %time% - %msg%\n",
+	}
 	log.Infof("Starting the viewer process")
 	viewerCmd = exec.Command(fmt.Sprintf("%v/bin/node", PATH_PREFIX), "viewer.js", "-c", fmt.Sprintf("%v/etc/config.ini", PATH_PREFIX))
 	viewerCmd.Dir = fmt.Sprintf("%v/viewer", PATH_PREFIX)
-	viewerCmd.Stdout = os.Stdout
-	viewerCmd.Stderr = os.Stdout
+	viewerCmd.Stdout = viewerLog.Writer()
+	viewerCmd.Stderr = viewerLog.Writer()
 	err := viewerCmd.Start()
 	return err
 }
 
 func runCapture() error {
+	captureLog.Formatter = &easy.Formatter{
+		TimestampFormat: "2006-01-02 15:04:05",
+		LogFormat:       "[CAPTURE] : %time% - %msg%\n",
+	}
 	log.Infof("Starting the Capture process")
 	captureCmd = exec.Command(fmt.Sprintf("%v/bin/moloch-capture", PATH_PREFIX), "-c", fmt.Sprintf("%v/etc/config.ini", PATH_PREFIX))
 	captureCmd.Dir = fmt.Sprintf("%v", PATH_PREFIX)
-	captureCmd.Stdout = os.Stdout
-	captureCmd.Stderr = os.Stdout
+	captureCmd.Stdout = captureLog.Writer()
+	captureCmd.Stderr = captureLog.Writer()
 	err := captureCmd.Start()
 	return err
 }
@@ -187,7 +198,7 @@ func main() {
 		initElasticIndices()
 	}
 	if GeneralOptions.AutoInit == "true" {
-		if !checkElasticIndexExist("sequence_v1", ArkimeOptions.Elasticsearch[0]) || !checkElasticIndexExist("sequence_v2", ArkimeOptions.Elasticsearch[0]) {
+		if !checkElasticIndexExist("arkime_sequence_v30", ArkimeOptions.Elasticsearch[0]) || !checkElasticIndexExist("arkime_stats_v30", ArkimeOptions.Elasticsearch[0]) {
 			initElasticIndices()
 		}
 	}

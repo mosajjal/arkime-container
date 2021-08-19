@@ -1,4 +1,4 @@
-FROM golang:1.16-alpine
+FROM golang:1.17-alpine
 
 WORKDIR /go/src/app
 COPY . .
@@ -9,7 +9,7 @@ RUN go build -v -ldflags="-s -w" -o arkime-supervisor
 
 FROM ubuntu:20.04
 
-ENV VER=2.7.1
+ENV VER=3.0.0
 
 RUN apt update && \
     apt install -y curl wget libwww-perl libjson-perl ethtool libyaml-dev jq libmagic1 iproute2 && \
