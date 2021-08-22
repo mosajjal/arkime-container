@@ -220,7 +220,7 @@ default:
                                             the httpd.conf
                                             ; RewriteRule .* -
                                             [E=ENV_RU:%{REMOTE_USER}]
-                                            ; RequestHeader set MOLOCH_USER
+                                            ; RequestHeader set ARKIME_USER
                                             %{ENV_RU}e (default: arkime_user)
                                             [$ARKIME_USERNAMEHEADER]
       --parseSMTP=[true|false]              Should we parse extra smtp traffic
