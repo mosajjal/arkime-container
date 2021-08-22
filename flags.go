@@ -131,6 +131,7 @@ func flagsProcess() {
 		parser.Parse()
 
 		iniParser.WriteFile(string(GeneralOptions.WriteConfig), flags.IniIncludeDefaults)
+		os.Exit(0)
 	}
 
 }
