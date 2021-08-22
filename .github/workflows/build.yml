@@ -33,6 +33,10 @@ jobs:
       run: go test -v .
       working-directory: "."
 
+    - name: generate sample config file 
+      run: ./arkime-container --writeConfig=config.ini
+      working-directory: "."
+
     - name: update README command line options
       run: |
         START="$(($(grep -n "start of command line options" README.md | cut -f1 -d:)+2))"
@@ -44,3 +48,14 @@ jobs:
         awk -v var="$USAGE" 'NR=='$START'{print var} NR<'$START' || NR>'$END README.md > README.tmp
         mv README.tmp README.md
       working-directory: "."
+
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v5
+      with:
+        author_name: Ali Mosajjal
+        author_email: mosajjal@gmail.com
+        message: "auto update readme and config.ini"
+        add: "config.ini README.md"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
