@@ -190,11 +190,11 @@ func main() {
 	flagsProcess()
 
 	if GeneralOptions.ForceInit == "true" {
-		// Check to see if Moloch has been installed before to prevent data loss
+		// Check to see if Arkime has been installed before to prevent data loss
 		// STATUS5=$(curl -s -X GET "$ES_HOST/sequence_v1" | jq --raw-output '.status')
 		// STATUS6=$(curl -s -X GET "$ES_HOST/sequence_v2" | jq --raw-output '.status')
 		// check to see if we're initializing from scratch and run db.pl
-		// "echo INIT | /data/moloch/db/db.pl $ES_HOST init"
+		// "echo INIT | db.pl $ES_HOST init"
 		initElasticIndices()
 	}
 	if GeneralOptions.AutoInit == "true" {
@@ -220,7 +220,7 @@ func main() {
 	if GeneralOptions.GeoLite2ASNURL != "" {
 		DownloadFile(ArkimeOptions.GeoLite2ASN, GeneralOptions.GeoLite2ASNURL)
 	}
-	// run /data/moloch/bin/moloch_config_interfaces.sh
+	// run arkime_config_interfaces.sh
 	configureInterfaces()
 	// run capture process
 	err := runCapture()
