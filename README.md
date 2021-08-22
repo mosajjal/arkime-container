@@ -5,6 +5,7 @@ Arkime is a large scale, open source, indexed packet capture and search tool ([w
 This tiny project aims to bring Arkime's powerful abilities to the cloud native world. `arkime-supervisor` is a Golang daemon running both capture and viewer functionality of Arkime and pulls logs from both viewer and capture processes into the containers `stdout`. It also handles initial Elasticsearch/Opensearch index creation, optionally adds default credentials and downloads necessery definition files to help Arkime work with no direct intraction with the container itself.
 
 full list of options:
+
 [//]: <> (start of command line options)
 ```
 arkime-supervisor [OPTIONS]
