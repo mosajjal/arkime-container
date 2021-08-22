@@ -50,7 +50,7 @@ jobs:
       working-directory: "."
       shell: bash
       env:
-        COLUMNS=150
+        COLUMNS: 150
 
     - name: Commit changes
       uses: EndBug/add-and-commit@v5
