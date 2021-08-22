@@ -19,7 +19,7 @@ import (
 
 var exiting chan bool
 
-var PATH_PREFIX = "/data/moloch"
+var PATH_PREFIX = "/opt/arkime"
 
 var captureCmd *exec.Cmd
 var captureLog = log.New()
@@ -40,7 +40,7 @@ func handleInterrupt(done chan bool) {
 
 func errorHandler(err error) {
 	if err != nil {
-		log.Fatal("fatal Error: ", err)
+		log.Error("fatal Error: ", err)
 	}
 }
 
@@ -113,7 +113,7 @@ func initElasticIndices() {
 
 func addAdminUser(Username, Password string) {
 	log.Infof("Adding Admin user with username: %v and password: %v", Username, Password)
-	Cmd := exec.Command(fmt.Sprintf("%v/bin/moloch_add_user.sh", PATH_PREFIX), Username, "Admin User", Password, "--admin")
+	Cmd := exec.Command(fmt.Sprintf("%v/bin/arkime_add_user.sh", PATH_PREFIX), Username, "Admin User", Password, "--admin")
 	err, out := Cmd.Output()
 	if err != nil {
 		log.Warnf("%s failed: %s", Cmd, err)
@@ -157,7 +157,7 @@ func runCapture() error {
 		LogFormat:       "[CAPTURE] : %time% - %msg%\n",
 	}
 	log.Infof("Starting the Capture process")
-	captureCmd = exec.Command(fmt.Sprintf("%v/bin/moloch-capture", PATH_PREFIX), "-c", fmt.Sprintf("%v/etc/config.ini", PATH_PREFIX))
+	captureCmd = exec.Command(fmt.Sprintf("%v/bin/capture", PATH_PREFIX), "-c", fmt.Sprintf("%v/etc/config.ini", PATH_PREFIX))
 	captureCmd.Dir = fmt.Sprintf("%v", PATH_PREFIX)
 	captureCmd.Stdout = captureLog.Writer()
 	captureCmd.Stderr = captureLog.Writer()

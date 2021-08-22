@@ -26,9 +26,21 @@ jobs:
       working-directory: "."
 
     - name: Build
-      run: go build -v .
+      run: go build -v -o arkime-container .
       working-directory: "./"
 
     - name: Test
       run: go test -v .
+      working-directory: "."
+
+    - name: update README command line options
+      run: |
+        START="$(($(grep -n "start of command line options" README.md | cut -f1 -d:)+2))"
+        END="$(($(grep -n "end of command line options" README.md | cut -f1 -d:)-2))"
+        USAGE=$(cat <<-END
+        $(COLUMNS=120 ./arkime-container --help | sed -r 1d)
+        END
+        )
+        awk -v var="$USAGE" 'NR=='$START'{print var} NR<'$START' || NR>'$END README.md > README.tmp
+        mv README.tmp README.md
       working-directory: "."

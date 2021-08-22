@@ -14,14 +14,14 @@ ENV VER=3.0.0
 RUN apt update && \
     apt install -y curl wget libwww-perl libjson-perl ethtool libyaml-dev jq libmagic1 iproute2 && \
     rm -rf /var/lib/apt/lists/* && \
-    curl https://s3.amazonaws.com/files.molo.ch/builds/ubuntu-20.04/moloch_$VER-1_amd64.deb -o /opt/moloch_$VER-1_amd64.deb && \
-    dpkg -i /opt/moloch_$VER-1_amd64.deb
+    curl https://s3.amazonaws.com/files.molo.ch/builds/ubuntu-20.04/arkime_$VER-1_amd64.deb -o /opt/arkime_$VER-1_amd64.deb && \
+    dpkg -i /opt/arkime_$VER-1_amd64.deb
 
 
-COPY --from=0 /go/src/app/arkime-supervisor /data/moloch/
+COPY --from=0 /go/src/app/arkime-supervisor /opt/arkime/
 
 EXPOSE 8005
 
-WORKDIR /data/moloch
+WORKDIR /opt/arkime
 
 ENTRYPOINT ["./arkime-supervisor"]

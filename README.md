@@ -5,6 +5,7 @@ Arkime is a large scale, open source, indexed packet capture and search tool ([w
 This tiny project aims to bring Arkime's powerful abilities to the cloud native world. `arkime-supervisor` is a Golang daemon running both capture and viewer functionality of Arkime and pulls logs from both viewer and capture processes into the containers `stdout`. It also handles initial Elasticsearch/Opensearch index creation, optionally adds default credentials and downloads necessery definition files to help Arkime work with no direct intraction with the container itself.
 
 full list of options:
+[//]: <> (start of command line options)
 ```
 arkime-supervisor [OPTIONS]
 
@@ -158,14 +159,14 @@ general:
 Help Options:
   -h, --help                                Show this help message
 ```
-
+[//]: <> (end of command line options)
 
 ## Run with a configuration file
 
 `arkime-supervisor` can pass on a user-provided `ini` config file to the container, something like this:
 
 ```sh
-docker run -it --rm -v $PWD/config.ini:/data/moloch/etc/config.ini -v /data/moloch/raw:/data/moloch/raw --net host mosajjal/arkime:latest  --config=/data/moloch/etc/config.ini
+docker run -it --rm -v $PWD/config.ini:/opt/arkime/etc/config.ini -v /opt/arkime/raw:/opt/arkime/raw --net host mosajjal/arkime:latest  --config=/opt/arkime/etc/config.ini
 ```
 
 *IMPORTANT NOTE*: current implementation does not support anything otuside the `[default]` section for the `.ini` file and will throw an error if there's anything else other than the `[default]` section is present. 
@@ -175,7 +176,7 @@ docker run -it --rm -v $PWD/config.ini:/data/moloch/etc/config.ini -v /data/molo
 `arkime-supervisor` also supports command line arguments as well as Environment variables to set most common commands into an Arkime-compatible `.ini` file on container's startup, so the user won't have to deal with managing an extra `ini` file dynamically.
 
 ```sh
-docker run -it --rm -v /data/moloch/raw:/data/moloch/raw --net host mosajjal/arkime:latest --pcapWriteMethod=null --pcapDir=/tmp/ --passwordSecret=Passw0rd --elasticsearch=http://elasticsearch:9200 --interface=lo --forceInit=true --createAdminUser=true
+docker run -it --rm -v /opt/arkime/raw:/opt/arkime/raw --net host mosajjal/arkime:latest --pcapWriteMethod=null --pcapDir=/tmp/ --passwordSecret=Passw0rd --elasticsearch=http://elasticsearch:9200 --interface=lo --forceInit=true --createAdminUser=true
 ```
 
 
