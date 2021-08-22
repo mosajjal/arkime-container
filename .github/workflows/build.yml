@@ -10,7 +10,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
 
     - name: Set up Go 1.x
@@ -48,6 +48,7 @@ jobs:
         awk -v var="$USAGE" 'NR=='$START'{print var} NR<'$START' || NR>'$END README.md > README.tmp
         mv README.tmp README.md
       working-directory: "."
+      shell: bash
 
     - name: Commit changes
       uses: EndBug/add-and-commit@v5
