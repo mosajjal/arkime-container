@@ -39,7 +39,7 @@ jobs:
 
     - name: update README command line options
       run: |
-        stty -F /dev/ttyS0 cols 120
+        sudo stty -F /dev/ttyS0 cols 120
         START="$(($(grep -n "start of command line options" README.md | cut -f1 -d:)+2))"
         END="$(($(grep -n "end of command line options" README.md | cut -f1 -d:)-2))"
         USAGE=$(cat <<-END
