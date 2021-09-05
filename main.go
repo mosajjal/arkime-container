@@ -188,7 +188,6 @@ func DownloadFile(filepath string, url string) error {
 
 func main() {
 	flagsProcess()
-
 	if GeneralOptions.ForceInit == "true" {
 		// Check to see if Arkime has been installed before to prevent data loss
 		// STATUS5=$(curl -s -X GET "$ES_HOST/sequence_v1" | jq --raw-output '.status')

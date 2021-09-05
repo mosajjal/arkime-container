@@ -1,7 +1,9 @@
 package main
 
 import (
+	"errors"
 	"os"
+	"reflect"
 	"time"
 
 	flags "github.com/jessevdk/go-flags"
@@ -127,11 +129,27 @@ func flagsProcess() {
 	}
 
 	// choice to spit out an Arkime config file based on the parsed choices
-	if GeneralOptions.WriteConfig != "" {
+	writeConfigDefault, _ := getTagValue(GeneralOptions, "WriteConfig", "default")
+	if string(GeneralOptions.WriteConfig) != writeConfigDefault {
 		parser.Parse()
 
 		iniParser.WriteFile(string(GeneralOptions.WriteConfig), flags.IniIncludeDefaults)
 		os.Exit(0)
 	}
 
+}
+
+func getTagValue(myStruct interface{}, myField string, myTag string) (string, error) {
+	t := reflect.TypeOf(myStruct)
+	for i := 0; i < t.NumField(); i++ {
+		// Get the field, returns https://golang.org/pkg/reflect/#StructField
+		field := t.Field(i)
+		if field.Name == myField {
+			// Get the field tag value
+			tag := field.Tag.Get(myTag)
+			return tag, nil
+		}
+	}
+
+	return "", errors.New("no tag found")
 }
