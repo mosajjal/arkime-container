@@ -130,10 +130,9 @@ func flagsProcess() {
 
 	// choice to spit out an Arkime config file based on the parsed choices
 	writeConfigDefault, _ := getTagValue(GeneralOptions, "WriteConfig", "default")
+	parser.Parse()
+	iniParser.WriteFile(string(GeneralOptions.WriteConfig), flags.IniIncludeDefaults)
 	if string(GeneralOptions.WriteConfig) != writeConfigDefault {
-		parser.Parse()
-
-		iniParser.WriteFile(string(GeneralOptions.WriteConfig), flags.IniIncludeDefaults)
 		os.Exit(0)
 	}
 
