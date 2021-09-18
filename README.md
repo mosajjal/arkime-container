@@ -317,6 +317,9 @@ default:
                                             ; in order and can replace values
                                             set in this file or previous files.
                                             [$ARKIME_INCLUDES]
+      --pcapReadMethod=                     ADVANCED - Specify how packets are
+                                            read from network cards: (default:
+                                            libpcap) [$ARKIME_PCAPREADMETHOD]
       --pcapWriteMethod=                    ADVANCED - How is pcap written to
                                             disk
                                             ;  simple=use O_DIRECT if
