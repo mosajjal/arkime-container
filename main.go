@@ -99,7 +99,7 @@ func checkElasticIndexExist(indexName string, elasticHost string) bool {
 
 func initElasticIndices() {
 	log.Infof("Initializing Indices")
-	Cmd := exec.Command(fmt.Sprintf("%v/db/db.pl", PATH_PREFIX), "--insecure", ArkimeOptions.Elasticsearch[0], "init")
+	Cmd := exec.Command(fmt.Sprintf("%v/db/db.pl", PATH_PREFIX), "--insecure", ArkimeOptions.Elasticsearch, "init")
 	buffer := bytes.Buffer{}
 	buffer.Write([]byte("INIT\n"))
 	Cmd.Stdin = &buffer
@@ -147,7 +147,12 @@ func runViewer() error {
 	viewerCmd.Dir = fmt.Sprintf("%v/viewer", PATH_PREFIX)
 	viewerCmd.Stdout = viewerLog.Writer()
 	viewerCmd.Stderr = viewerLog.Writer()
-	err := viewerCmd.Start()
+	var err error
+	// Writing without a reader will deadlock so write in a goroutine
+	go func() {
+		defer viewerCmd.Wait()
+		err = viewerCmd.Start()
+	}()
 	return err
 }
 
@@ -161,7 +166,12 @@ func runCapture() error {
 	captureCmd.Dir = fmt.Sprintf("%v", PATH_PREFIX)
 	captureCmd.Stdout = captureLog.Writer()
 	captureCmd.Stderr = captureLog.Writer()
-	err := captureCmd.Start()
+	var err error
+	// Writing without a reader will deadlock so write in a goroutine
+	go func() {
+		defer captureCmd.Wait()
+		err = captureCmd.Start()
+	}()
 	return err
 }
 
@@ -197,7 +207,8 @@ func main() {
 		initElasticIndices()
 	}
 	if GeneralOptions.AutoInit == "true" {
-		if !checkElasticIndexExist("arkime_sequence_v30", ArkimeOptions.Elasticsearch[0]) || !checkElasticIndexExist("arkime_stats_v30", ArkimeOptions.Elasticsearch[0]) {
+		//TODO: would ArkimeOptions.Elasticsearch work with multiplle inputes?
+		if !checkElasticIndexExist("arkime_sequence_v30", ArkimeOptions.Elasticsearch) || !checkElasticIndexExist("arkime_stats_v30", ArkimeOptions.Elasticsearch) {
 			initElasticIndices()
 		}
 	}
