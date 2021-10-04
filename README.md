@@ -388,16 +388,20 @@ default:
 
 general:
   -h, --help                                Print this help to stdout
-      --config=                             path to Arkime config file
-                                            [$ARKIME_CONFIG]
-      --writeConfig=                        generate an Arkime config file
+      --dumpConfig                          generate an Arkime config file
                                             based on current inputs (flags,
                                             input config file and environment
-                                            variables) and write to provided
-                                            path. Empty input will disable the
-                                            functionality (default:
+                                            variables) and write to stdout.
+                                            [$ARKIME_DUMPCONFIG]
+      --noConf=[true|false]                 Do not use any of the provided
+                                            flags to generate a Config file,
+                                            used when config file is directly
+                                            mounted inside the container
+                                            (default: false) [$ARKIME_NOCONF]
+      --configPath=                         path to look for Arkime Config file
+                                            (default:
                                             /opt/arkime/etc/config.ini)
-                                            [$ARKIME_WRITECONFIG]
+                                            [$ARKIME_CONFIGPATH]
       --version=[true|false]                print version and exit (default:
                                             false) [$ARKIME_VERSION]
       --autoInit=[true|false]               atuomatically initialize Elastic
