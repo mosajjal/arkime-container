@@ -34,7 +34,7 @@ jobs:
       working-directory: "."
 
     - name: generate sample config file 
-      run: ./arkime-container --writeConfig=config.ini
+      run: ./arkime-container --dumpConfig > config.ini
       working-directory: "."
 
     - name: update README command line options
