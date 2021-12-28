@@ -1,7 +1,8 @@
 name: Publish Container Image to Github Container Registry
 on:
-  release:
-    types: [published]
+  create:
+    tags:
+      - v*
   workflow_dispatch:
 
 env:
