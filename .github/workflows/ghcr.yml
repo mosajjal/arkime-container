@@ -2,7 +2,6 @@ name: Publish Container Image to Github Container Registry
 on:
   create:
     tags:
-      - *
   workflow_dispatch:
 
 env:
