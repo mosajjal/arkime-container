@@ -19,13 +19,17 @@ func DumpArkimeIni(filename string) {
 	file.Write([]byte("[default]\n"))
 	for i := 0; i < v.NumField(); i++ {
 		iniDefault, _ := getTagValue(ArkimeOptions, typeOfV.Field(i).Name, "ini-default")
-		if iniDefault != "false" {
-			file.Write([]byte(fmt.Sprintf("%s=%v\n", typeOfV.Field(i).Name, v.Field(i).Interface())))
-		} else {
-			defaultValue, _ := getTagValue(GeneralOptions, typeOfV.Field(i).Name, "default")
-			if defaultValue != v.Field(i).Interface() {
-				fmt.Printf("%s=%v\n", typeOfV.Field(i).Name, v.Field(i).Interface())
-			}
+		iniName, _ := getTagValue(ArkimeOptions, typeOfV.Field(i).Name, "ini-name")
+		defaultValue, _ := getTagValue(GeneralOptions, typeOfV.Field(i).Name, "default")
+		// file.Write([]byte(fmt.Sprintf("%s=%v\n", typeOfV.Field(i).Name, v.Field(i).Interface())))
+		// True ini-default means the default value of the field should be written in the ini file. The non-default values should always be written regardless of the ini-default value.
+		// in case of a false ini-default, only write the field if it's not the default value
+		if defaultValue != v.Field(i).Interface() {
+			file.Write([]byte(fmt.Sprintf("%s=%v\n", iniName, v.Field(i).Interface())))
+			continue
+		}
+		if iniDefault == "true" {
+			file.Write([]byte(fmt.Sprintf("%s=%v\n", iniName, defaultValue)))
 		}
 
 	}

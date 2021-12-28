@@ -103,22 +103,22 @@ func initElasticIndices() {
 	buffer := bytes.Buffer{}
 	buffer.Write([]byte("INIT\n"))
 	Cmd.Stdin = &buffer
-	err, out := Cmd.Output()
+	out, err := Cmd.CombinedOutput()
 	if err != nil {
-		log.Warnf("%s failed: %s", Cmd, err)
+		log.Warnf("%s failed with: %s", Cmd, out)
 	} else {
-		log.Infof("%v", out)
+		log.Infof("%s successful with: %s", Cmd, out)
 	}
 }
 
 func addAdminUser(Username, Password string) {
 	log.Infof("Adding Admin user with username: %v and password: %v", Username, Password)
 	Cmd := exec.Command(fmt.Sprintf("%v/bin/arkime_add_user.sh", PATH_PREFIX), Username, "Admin User", Password, "--admin")
-	err, out := Cmd.Output()
+	out, err := Cmd.CombinedOutput()
 	if err != nil {
-		log.Warnf("%s failed: %s", Cmd, err)
+		log.Warnf("%s failed with: %s", Cmd, out)
 	} else {
-		log.Infof("%v", out)
+		log.Infof("%s successful with: %s", Cmd, out)
 	}
 }
 
@@ -207,7 +207,7 @@ func main() {
 		initElasticIndices()
 	}
 	if GeneralOptions.AutoInit == "true" {
-		//TODO: would ArkimeOptions.Elasticsearch work with multiplle inputes?
+		//TODO: would ArkimeOptions.Elasticsearch work with multiple inputs?
 		if !checkElasticIndexExist("arkime_sequence_v30", ArkimeOptions.Elasticsearch) || !checkElasticIndexExist("arkime_stats_v30", ArkimeOptions.Elasticsearch) {
 			initElasticIndices()
 		}
