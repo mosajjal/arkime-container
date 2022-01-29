@@ -487,7 +487,14 @@ docker run -it --rm -v $PWD/config.ini:/opt/arkime/etc/config.ini -v /opt/arkime
 `arkime-supervisor` also supports command line arguments as well as Environment variables to set most common commands into an Arkime-compatible `.ini` file on container's startup, so the user won't have to deal with managing an extra `ini` file dynamically.
 
 ```sh
-docker run -it --rm -v /opt/arkime/raw:/opt/arkime/raw --net host mosajjal/arkime:latest --pcapWriteMethod=null --pcapDir=/tmp/ --passwordSecret=Passw0rd --elasticsearch=http://elasticsearch:9200 --interface=lo --forceInit=true --createAdminUser=true
+docker run -it --rm \
+  --volume /data/moloch/raw:/opt/arkime/raw \
+  --net host \
+  mosajjal/arkime:latest \
+  --passwordSecret=Passw0rd \
+  --elasticsearch=http://192.168.11.11:9200 \
+  --interface=lo \
+  --createAdminUser=true
 ```
 
 
