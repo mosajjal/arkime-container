@@ -9,7 +9,7 @@ RUN go build -v -ldflags="-s -w" -o arkime-supervisor
 
 FROM ubuntu:20.04
 
-ENV VER=3.4.0
+ENV VER=3.4.1
 
 RUN apt update && \
     apt install -y curl wget libwww-perl libjson-perl ethtool libyaml-dev jq libmagic1 iproute2 && \
