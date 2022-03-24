@@ -37,6 +37,6 @@ jobs:
           context: .
           file: Dockerfile-testing
           push: true
-          tags: dev
-          labels: dev
+          tags: mosajjal/arkime-container:dev
+
 
