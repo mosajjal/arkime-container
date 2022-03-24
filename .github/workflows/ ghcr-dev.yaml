@@ -37,6 +37,6 @@ jobs:
           context: .
           file: Dockerfile-testing
           push: true
-          tags: mosajjal/arkime-container:dev
+          tags: ${{ env.REGISTRY }}/${{ github.actor }}/arkime-container:dev
 
 
