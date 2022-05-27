@@ -33,7 +33,6 @@ func DumpArkimeIni(filename string) {
 		}
 
 	}
-
 }
 
 var ArkimeOptions struct {
@@ -112,6 +111,7 @@ var ArkimeOptions struct {
 var GeneralOptions struct {
 	Help                   bool           `long:"help"  short:"h"        no-ini:"true"                                                                                                                                                 description:"Print this help to stdout"`
 	DumpConfig             bool           `long:"dumpConfig"             no-ini:"true" ini-default:"false"    env:"ARKIME_DUMPCONFIG"                                                                                                  description:"generate an Arkime config file based on current inputs (flags, input config file and environment variables) and write to stdout."`
+	SkipTlsVerifiction     bool           `long:"skipTlsVerifiction"     no-ini:"true" ini-default:"false"    env:"ARKIME_SKIPTLSVERIFICTION"                                                                                          description:"Skip TLS verification for Elasticsearch and Viewer"`
 	NoConf                 string         `long:"noConf"                 no-ini:"true" ini-default:"false"    env:"ARKIME_NOCONF"                 default:"false"         choice:"true" choice:"false"                                 description:"Do not use any of the provided flags to generate a Config file, used when config file is directly mounted inside the container"`
 	ConfigPath             flags.Filename `long:"configPath"             no-ini:"true" ini-default:"false"    env:"ARKIME_CONFIGPATH"             default:"/opt/arkime/etc/config.ini"                                                 description:"path to look for Arkime Config file"`
 	Version                string         `long:"version"                no-ini:"true" ini-default:"false"    env:"ARKIME_VERSION"                default:"false"         choice:"true" choice:"false"                                 description:"print version and exit"`
@@ -129,12 +129,12 @@ var GeneralOptions struct {
 	GeoLite2CountryURL     string         `long:"geoLite2CountryURL"     no-ini:"true" ini-default:"false"    env:"ARKIME_GEOLITECOUNTRYURL"      default:"https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-Country.mmdb"  description:"Download GeoLite2 Country mmdb on startup and push to geoLite2Country location defined in ArkimeOptions. empty means disabled"`
 	GeoLite2ASNURL         string         `long:"geoLite2ASNURL"         no-ini:"true" ini-default:"false"    env:"ARKIME_GEOLITEASNURL"          default:"https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-ASN.mmdb"      description:"Download GeoLite2 ASN mmdb on startup and push to geoLite2ASN location defined in ArkimeOptions. empty means disabled"`
 	GeoLiteRefreshInterval time.Duration  `long:"geoLiteRefreshInterval" no-ini:"true" ini-default:"false"    env:"ARKIME_GEOLITEREFRESHINTERVAL" default:"168h"                                                                       description:"Auto re-download interval for GeoLite2CountryURL and GeoLite2ASNURL"`
+	insecure               string         // build the --insecure flag out of SkipTlsVerifiction
 	// TODO: possibly handle daily script to remove old indices from Elasticsearch
 }
 
 func flagsProcess() {
-
-	var parser = flags.NewNamedParser("ARKIME", flags.PassDoubleDash|flags.PrintErrors)
+	parser := flags.NewNamedParser("ARKIME", flags.PassDoubleDash|flags.PrintErrors)
 	// iniParser := flags.NewIniParser(parser)
 	parser.AddGroup("default", "Arkime Options", &ArkimeOptions)
 	parser.AddGroup("general", "General Options", &GeneralOptions)
@@ -152,6 +152,12 @@ func flagsProcess() {
 	if GeneralOptions.DumpConfig {
 		DumpArkimeIni("/dev/stdout")
 		os.Exit(0)
+	}
+
+	if GeneralOptions.SkipTlsVerifiction {
+		GeneralOptions.insecure = "--insecure"
+	} else {
+		GeneralOptions.insecure = ""
 	}
 
 	// configDefault, _ := getTagValue(GeneralOptions, "Config", "default")
@@ -182,7 +188,6 @@ func flagsProcess() {
 	// // }
 
 	// if the user didn't change the default value of WriteConfig, it means
-
 }
 
 func getTagValue(myStruct interface{}, myField string, myTag string) (string, error) {

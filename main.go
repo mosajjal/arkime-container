@@ -21,10 +21,12 @@ var exiting chan bool
 
 var PATH_PREFIX = "/opt/arkime"
 
-var captureCmd *exec.Cmd
-var captureLog = log.New()
-var viewerCmd *exec.Cmd
-var viewerLog = log.New()
+var (
+	captureCmd *exec.Cmd
+	captureLog = log.New()
+	viewerCmd  *exec.Cmd
+	viewerLog  = log.New()
+)
 
 func handleInterrupt(done chan bool) {
 	c := make(chan os.Signal, 1)
@@ -99,7 +101,7 @@ func checkElasticIndexExist(indexName string, elasticHost string) bool {
 
 func initElasticIndices() {
 	log.Infof("Initializing Indices")
-	Cmd := exec.Command(fmt.Sprintf("%v/db/db.pl", PATH_PREFIX), "--insecure", ArkimeOptions.Elasticsearch, "init")
+	Cmd := exec.Command(fmt.Sprintf("%v/db/db.pl", PATH_PREFIX), GeneralOptions.insecure, ArkimeOptions.Elasticsearch, "init")
 	buffer := bytes.Buffer{}
 	buffer.Write([]byte("INIT\n"))
 	Cmd.Stdin = &buffer
@@ -113,7 +115,7 @@ func initElasticIndices() {
 
 func addAdminUser(Username, Password string) {
 	log.Infof("Adding Admin user with username: %v and password: %v", Username, Password)
-	Cmd := exec.Command(fmt.Sprintf("%v/bin/arkime_add_user.sh", PATH_PREFIX), Username, "Admin User", Password, "--admin")
+	Cmd := exec.Command(fmt.Sprintf("%v/bin/arkime_add_user.sh", PATH_PREFIX), GeneralOptions.insecure, Username, "Admin User", Password, "--admin")
 	out, err := Cmd.CombinedOutput()
 	if err != nil {
 		log.Warnf("%s failed with: %s", Cmd, out)
@@ -139,11 +141,11 @@ func configureInterfaces() {
 
 func runViewer() error {
 	viewerLog.Formatter = &easy.Formatter{
-		TimestampFormat: "2006-01-02 15:04:05",
+		TimestampFormat: time.RFC3339,
 		LogFormat:       "[VIEWER] : %time% - %msg%\n",
 	}
 	log.Infof("Starting the viewer process")
-	viewerCmd = exec.Command(fmt.Sprintf("%v/bin/node", PATH_PREFIX), "viewer.js", "-c", fmt.Sprintf("%v/etc/config.ini", PATH_PREFIX))
+	viewerCmd = exec.Command(fmt.Sprintf("%v/bin/node", PATH_PREFIX), "viewer.js", GeneralOptions.insecure, "-c", fmt.Sprintf("%v/etc/config.ini", PATH_PREFIX))
 	viewerCmd.Dir = fmt.Sprintf("%v/viewer", PATH_PREFIX)
 	viewerCmd.Stdout = viewerLog.Writer()
 	viewerCmd.Stderr = viewerLog.Writer()
@@ -158,11 +160,11 @@ func runViewer() error {
 
 func runCapture() error {
 	captureLog.Formatter = &easy.Formatter{
-		TimestampFormat: "2006-01-02 15:04:05",
+		TimestampFormat: time.RFC3339,
 		LogFormat:       "[CAPTURE] : %time% - %msg%\n",
 	}
 	log.Infof("Starting the Capture process")
-	captureCmd = exec.Command(fmt.Sprintf("%v/bin/capture", PATH_PREFIX), "-c", fmt.Sprintf("%v/etc/config.ini", PATH_PREFIX))
+	captureCmd = exec.Command(fmt.Sprintf("%v/bin/capture", PATH_PREFIX), GeneralOptions.insecure, "-c", fmt.Sprintf("%v/etc/config.ini", PATH_PREFIX))
 	captureCmd.Dir = fmt.Sprintf("%v", PATH_PREFIX)
 	captureCmd.Stdout = captureLog.Writer()
 	captureCmd.Stderr = captureLog.Writer()
@@ -207,7 +209,7 @@ func main() {
 		initElasticIndices()
 	}
 	if GeneralOptions.AutoInit == "true" {
-		//TODO: would ArkimeOptions.Elasticsearch work with multiple inputs?
+		// TODO: would ArkimeOptions.Elasticsearch work with multiple inputs?
 		if !checkElasticIndexExist("arkime_sequence_v30", ArkimeOptions.Elasticsearch) || !checkElasticIndexExist("arkime_stats_v30", ArkimeOptions.Elasticsearch) {
 			initElasticIndices()
 		}
