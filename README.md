@@ -393,6 +393,9 @@ general:
                                             input config file and environment
                                             variables) and write to stdout.
                                             [$ARKIME_DUMPCONFIG]
+      --skipTlsVerifiction                  Skip TLS verification for
+                                            Elasticsearch and Viewer
+                                            [$ARKIME_SKIPTLSVERIFICTION]
       --noConf=[true|false]                 Do not use any of the provided
                                             flags to generate a Config file,
                                             used when config file is directly
