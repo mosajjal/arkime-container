@@ -1,0 +1,58 @@
+version: '3'
+services:
+  opensearch-node1:
+    image: opensearchproject/opensearch:2.0.0
+    container_name: opensearch-node1
+    environment:
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch-node1
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true # along with the memlock settings below, disables swapping
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        hard: 65536
+    volumes:
+      - opensearch-data1:/usr/share/opensearch/data
+    ports:
+      - 9200:9200
+      - 9600:9600 # required for Performance Analyzer
+    healthcheck:
+      interval: 10s
+      retries: 80
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent -k --output /dev/null https://admin:admin@localhost:9200/
+    networks:
+      - opensearch-net
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.0.0
+    container_name: opensearch-dashboards
+    ports:
+      - 5601:5601
+    expose:
+      - "5601"
+    environment:
+      OPENSEARCH_HOSTS: '["https://opensearch-node1:9200"]' # must be a string with no spaces when specified as an environment variable
+    networks:
+      - opensearch-net
+
+  arkime:
+    image: ghcr.io/mosajjal/arkime-container:dev
+    container_name: arkime
+    network_mode: "host"
+    command: ["--passwordSecret=Passw0rd", "--elasticsearch=https://admin:admin@127.0.0.1:9200", "--interface=lo", "--createAdminUser=true", "--skipTlsVerifiction", "--dropUser=root"]
+    depends_on:
+      opensearch-node1:
+        condition: service_healthy
+    volumes:
+      - arkime-data:/opt/arkime/raw
+
+volumes:
+  opensearch-data1:
+  arkime-data:
+
+networks:
+  opensearch-net:
