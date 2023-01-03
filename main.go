@@ -101,7 +101,13 @@ func checkElasticIndexExist(indexName string, elasticHost string) bool {
 
 func initElasticIndices() {
 	log.Infof("Initializing Indices")
-	Cmd := exec.Command(fmt.Sprintf("%v/db/db.pl", PATH_PREFIX), GeneralOptions.insecure, ArkimeOptions.Elasticsearch, "init")
+	args := []string{}
+	if GeneralOptions.insecure != "" {
+		args = append(args, GeneralOptions.insecure)
+	}
+	args = append(args, ArkimeOptions.Elasticsearch)
+	args = append(args, "init")
+	Cmd := exec.Command(fmt.Sprintf("%v/db/db.pl", PATH_PREFIX), args...)
 	buffer := bytes.Buffer{}
 	buffer.Write([]byte("INIT\n"))
 	Cmd.Stdin = &buffer
