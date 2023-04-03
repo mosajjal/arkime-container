@@ -86,6 +86,25 @@ default:
       --pcapDir=                            The directory to save raw pcap
                                             files to (default: /opt/arkime/raw)
                                             [$ARKIME_PCAPDIR]
+      --pcapDirAlgorithm=                   When pcapDir is a list of
+                                            directories, this determines how
+                                            Arkime chooses which directory to
+                                            use for each new pcap file.
+                                            Possible values: round-robin
+                                            (rotate sequentially),
+                                            max-free-percent (choose the
+                                            directory on the filesystem with
+                                            the highest percentage of available
+                                            space), max-free-bytes (choose the
+                                            directory on the filesystem with
+                                            the highest number of available
+                                            bytes). (default: round-robin)
+                                            [$ARKIME_PCAPDIRALGORITHM]
+      --pcapDirTemplate=                    When set, this strftime template is
+                                            appended to pcapDir and allows
+                                            multiple directories to be created
+                                            based on time.
+                                            [$ARKIME_PCAPDIRTEMPLATE]
       --maxFileSizeG=                       The max raw pcap file size in
                                             gigabytes, with a max value of 36G.
                                             ; The disk should have room for at
@@ -107,6 +126,9 @@ default:
                                             if
                                             ; active or inactive (default: 720)
                                             [$ARKIME_TCPSAVETIMEOUT]
+      --tcpClosingTimeout=                  Delay before saving tcp sessions
+                                            after close (default: 5)
+                                            [$ARKIME_TCPCLOSINGTIMEOUT]
       --udpTimeout=                         UDP timeout value.  Arkime assumes
                                             the UDP session is ended after this
                                             ; many seconds of inactivity.
@@ -376,15 +398,62 @@ default:
                                             ; Set to -1 to never log status
                                             (default: 100000)
                                             [$ARKIME_LOGEVERYXPACKETS]
-      --logUnknownProtocols=[true|false]    DEBUG - Write to stdout unknown
+      --logUnknownProtocols=                DEBUG - Write to stdout unknown
                                             protocols (default: false)
                                             [$ARKIME_LOGUNKNOWNPROTOCOLS]
-      --logESRequests=[true|false]          DEBUG - Write to stdout elastic
+      --logESRequests=                      DEBUG - Write to stdout elastic
                                             search requests (default: true)
                                             [$ARKIME_LOGESREQUESTS]
-      --logFileCreation=[true|false]        DEBUG - Write to stdout file
+      --logFileCreation=                    DEBUG - Write to stdout file
                                             creation information (default:
                                             true) [$ARKIME_LOGFILECREATION]
+      --userAuthIps=                        IPs allow to be used for
+                                            authenticated calls (default:
+                                            127.0.0.1,::1) [$ARKIME_USERAUTHIPS]
+      --userAutoCreateTmpl=                 When using requiredAuthHeader to
+                                            externalize provisioning of users
+                                            to a system like LDAP/AD, this
+                                            configuration parameter is used to
+                                            define the JSON structure used to
+                                            automatically create a arkime user
+                                            in the arkime users database if one
+                                            does not exist. The user will only
+                                            be created if the
+                                            requiredAuthHeader includes the
+                                            expected value in
+                                            requiredAuthHeaderVal, and is not
+                                            automatically deleted if the auth
+                                            headers are not present. Values can
+                                            be populated into the creation JSON
+                                            to dynamically populate fields into
+                                            the user database, which are passed
+                                            in as HTTP headers along with the
+                                            user and auth headers. The example
+                                            value below creates a user with a
+                                            userId pulled from the
+                                            http_auth_http_user HTTP header
+                                            with a name pulled from the
+                                            http_auth_mail user header. It is
+                                            expected that these headers are
+                                            passed in from an apache (or
+                                            similar) instance that fronts the
+                                            arkime viewer as described in the
+                                            documentation supporting
+                                            userNameHeader
+                                            [$ARKIME_USERAUTOCREATETMPL]
+      --authClientId=                       The OIDC client id
+                                            [$ARKIME_AUTHCLIENTID]
+      --authClientSecret=                   The OIDC Client Secret
+                                            [$ARKIME_AUTHCLIENTSECRET]
+      --authDiscoveryUrl=                   The OIDC discover wellknown URL.
+                                            [$ARKIME_AUTHDISCOVERYURL]
+      --authRedirectURL=                    Comma separated list of redirect
+                                            URLs. Maybe should end with
+                                            /auth/login/callback
+                                            [$ARKIME_AUTHREDIRECTURL]
+      --authUserIdField=                    The field to use in the response
+                                            from OIDC that contains the userId
+                                            [$ARKIME_AUTHUSERIDFIELD]
 
 general:
   -h, --help                                Print this help to stdout
