@@ -549,7 +549,7 @@ general:
 `arkime-supervisor` can pass on a user-provided `ini` config file to the container, something like this:
 
 ```sh
-docker run -it --rm -v $PWD/config.ini:/opt/arkime/etc/config.ini -v /opt/arkime/raw:/opt/arkime/raw --net host mosajjal/arkime:latest  --config=/opt/arkime/etc/config.ini
+docker run -it --rm -v $PWD/config.ini:/opt/arkime/etc/config.ini -v /opt/arkime/raw:/opt/arkime/raw --net host ghcr.io/mosajjal/arkime-container:latest  --configPath=/opt/arkime/etc/config.ini
 ```
 
 *IMPORTANT NOTE*: current implementation does not support anything otuside the `[default]` section for the `.ini` file and will throw an error if there's anything else other than the `[default]` section is present. 
@@ -562,7 +562,7 @@ docker run -it --rm -v $PWD/config.ini:/opt/arkime/etc/config.ini -v /opt/arkime
 docker run -it --rm \
   --volume /data/moloch/raw:/opt/arkime/raw \
   --net host \
-  mosajjal/arkime:latest \
+  ghcr.io/mosajjal/arkime-container:latest \
   --passwordSecret=Passw0rd \
   --elasticsearch=http://192.168.11.11:9200 \
   --interface=lo \
