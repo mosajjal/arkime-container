@@ -19,7 +19,7 @@ import (
 
 var exiting chan bool
 
-var PATH_PREFIX = "/opt/arkime"
+var pathPrefix = "/opt/arkime"
 
 var (
 	captureCmd *exec.Cmd
@@ -70,8 +70,8 @@ func handler() error {
 			}
 		case <-geoTick.C:
 			log.Infof("Refreshing GeoIP Database")
-			DownloadFile(ArkimeOptions.GeoLite2Country, GeneralOptions.GeoLite2CountryURL)
-			DownloadFile(ArkimeOptions.GeoLite2ASN, GeneralOptions.GeoLite2ASNURL)
+			downloadFile(ArkimeOptions.GeoLite2Country, GeneralOptions.GeoLite2CountryURL)
+			downloadFile(ArkimeOptions.GeoLite2ASN, GeneralOptions.GeoLite2ASNURL)
 		}
 	}
 }
@@ -107,7 +107,7 @@ func initElasticIndices() {
 	}
 	args = append(args, ArkimeOptions.Elasticsearch)
 	args = append(args, "init")
-	Cmd := exec.Command(fmt.Sprintf("%v/db/db.pl", PATH_PREFIX), args...)
+	Cmd := exec.Command(fmt.Sprintf("%v/db/db.pl", pathPrefix), args...)
 	buffer := bytes.Buffer{}
 	buffer.Write([]byte("INIT\n"))
 	Cmd.Stdin = &buffer
@@ -121,7 +121,7 @@ func initElasticIndices() {
 
 func addAdminUser(Username, Password string) {
 	log.Infof("Adding Admin user with username: %v and password: %v", Username, Password)
-	Cmd := exec.Command(fmt.Sprintf("%v/bin/arkime_add_user.sh", PATH_PREFIX), GeneralOptions.insecure, Username, "Admin User", Password, "--admin")
+	Cmd := exec.Command(fmt.Sprintf("%v/bin/arkime_add_user.sh", pathPrefix), GeneralOptions.insecure, Username, "Admin User", Password, "--admin")
 	out, err := Cmd.CombinedOutput()
 	if err != nil {
 		log.Warnf("%s failed with: %s", Cmd, out)
@@ -151,8 +151,8 @@ func runViewer() error {
 		LogFormat:       "[VIEWER] : %time% - %msg%\n",
 	}
 	log.Infof("Starting the viewer process")
-	viewerCmd = exec.Command(fmt.Sprintf("%v/bin/node", PATH_PREFIX), "viewer.js", GeneralOptions.insecure, "-c", fmt.Sprintf("%v/etc/config.ini", PATH_PREFIX))
-	viewerCmd.Dir = fmt.Sprintf("%v/viewer", PATH_PREFIX)
+	viewerCmd = exec.Command(fmt.Sprintf("%v/bin/node", pathPrefix), "viewer.js", GeneralOptions.insecure, "-c", fmt.Sprintf("%v/etc/config.ini", pathPrefix))
+	viewerCmd.Dir = fmt.Sprintf("%v/viewer", pathPrefix)
 	viewerCmd.Stdout = viewerLog.Writer()
 	viewerCmd.Stderr = viewerLog.Writer()
 	var err error
@@ -170,8 +170,8 @@ func runCapture() error {
 		LogFormat:       "[CAPTURE] : %time% - %msg%\n",
 	}
 	log.Infof("Starting the Capture process")
-	captureCmd = exec.Command(fmt.Sprintf("%v/bin/capture", PATH_PREFIX), GeneralOptions.insecure, "-c", fmt.Sprintf("%v/etc/config.ini", PATH_PREFIX))
-	captureCmd.Dir = fmt.Sprintf("%v", PATH_PREFIX)
+	captureCmd = exec.Command(fmt.Sprintf("%v/bin/capture", pathPrefix), GeneralOptions.insecure, "-c", fmt.Sprintf("%v/etc/config.ini", pathPrefix))
+	captureCmd.Dir = fmt.Sprintf("%v", pathPrefix)
 	captureCmd.Stdout = captureLog.Writer()
 	captureCmd.Stderr = captureLog.Writer()
 	var err error
@@ -183,7 +183,7 @@ func runCapture() error {
 	return err
 }
 
-func DownloadFile(filepath string, url string) error {
+func downloadFile(filepath string, url string) error {
 	log.Infof("Downloading %v into %v", url, filepath)
 	// Get the data
 	resp, err := http.Get(url)
@@ -227,16 +227,16 @@ func main() {
 	}
 	// update geoip database for the paths provided by the user in ini file and potentially update them periodically
 	if GeneralOptions.IPv4SpaceURL != "" {
-		DownloadFile(ArkimeOptions.RirFile, GeneralOptions.IPv4SpaceURL)
+		downloadFile(ArkimeOptions.RirFile, GeneralOptions.IPv4SpaceURL)
 	}
 	if GeneralOptions.ManufURL != "" {
-		DownloadFile(ArkimeOptions.OuiFile, GeneralOptions.ManufURL)
+		downloadFile(ArkimeOptions.OuiFile, GeneralOptions.ManufURL)
 	}
 	if GeneralOptions.GeoLite2CountryURL != "" {
-		DownloadFile(ArkimeOptions.GeoLite2Country, GeneralOptions.GeoLite2CountryURL)
+		downloadFile(ArkimeOptions.GeoLite2Country, GeneralOptions.GeoLite2CountryURL)
 	}
 	if GeneralOptions.GeoLite2ASNURL != "" {
-		DownloadFile(ArkimeOptions.GeoLite2ASN, GeneralOptions.GeoLite2ASNURL)
+		downloadFile(ArkimeOptions.GeoLite2ASN, GeneralOptions.GeoLite2ASNURL)
 	}
 	// run arkime_config_interfaces.sh
 	configureInterfaces()

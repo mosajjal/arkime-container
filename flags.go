@@ -10,7 +10,7 @@ import (
 	flags "github.com/jessevdk/go-flags"
 )
 
-func DumpArkimeIni(filename string) {
+func dumpArkimeIni(filename string) {
 	file, err := os.Create(filename)
 	errorHandler(err)
 	v := reflect.ValueOf(ArkimeOptions)
@@ -35,6 +35,7 @@ func DumpArkimeIni(filename string) {
 	}
 }
 
+// ArkimeOptions is the struct that holds the Arkime options. some of the options won't translate into the default ini file (ini-default=false)
 var ArkimeOptions struct {
 	Elasticsearch       string `long:"elasticsearch"          ini-name:"elasticsearch"          ini-default:"true"     env:"ARKIME_ELASTICSEARCH"          default:"http://127.0.0.1:9200"                                                            description:"Comma seperated list of elasticsearch host:port combinations.  If not using a\n \t ; elasticsearch VIP, a different elasticsearch node in the cluster can be specified\n \t ; for each Arkime node to help spread load on high volume clusters"`
 	RotateIndex         string `long:"rotateIndex"            ini-name:"rotateIndex"            ini-default:"true"     env:"ARKIME_ROTATEINDEX"            default:"daily"                                                                            description:"How often to create a new elasticsearch index. hourly,hourly6,daily,weekly,monthly\n \t ; Changing the value will cause previous sessions to be unreachable"`
@@ -118,6 +119,7 @@ var ArkimeOptions struct {
 	AuthUserIDField     string `long:"authUserIdField"        ini-name:"authUserIdField"        ini-default:"false"    env:"ARKIME_AUTHUSERIDFIELD"        default:""                                                                                 description:"The field to use in the response from OIDC that contains the userId"`
 }
 
+// GeneralOptions are the options that are used by all Arkime components
 var GeneralOptions struct {
 	Help                   bool           `long:"help"  short:"h"        no-ini:"true"                                                                                                                                                 description:"Print this help to stdout"`
 	DumpConfig             bool           `long:"dumpConfig"             no-ini:"true" ini-default:"false"    env:"ARKIME_DUMPCONFIG"                                                                                                  description:"generate an Arkime config file based on current inputs (flags, input config file and environment variables) and write to stdout."`
@@ -157,10 +159,10 @@ func flagsProcess() {
 	}
 	// do not write
 	if GeneralOptions.NoConf == "false" {
-		DumpArkimeIni(string(GeneralOptions.ConfigPath))
+		dumpArkimeIni(string(GeneralOptions.ConfigPath))
 	}
 	if GeneralOptions.DumpConfig {
-		DumpArkimeIni("/dev/stdout")
+		dumpArkimeIni("/dev/stdout")
 		os.Exit(0)
 	}
 
