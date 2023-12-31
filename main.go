@@ -107,6 +107,7 @@ func initElasticIndices() {
 	}
 	args = append(args, ArkimeOptions.Elasticsearch)
 	args = append(args, "init")
+	args = append(args, "--ifneeded")
 	Cmd := exec.Command(fmt.Sprintf("%v/db/db.pl", pathPrefix), args...)
 	buffer := bytes.Buffer{}
 	buffer.Write([]byte("INIT\n"))
