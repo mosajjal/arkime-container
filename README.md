@@ -295,6 +295,12 @@ default:
                                      or xfs
                                      ; stripe size.  Defaults to 256k (default:
                                      262143) [$ARKIME_PCAPWRITESIZE]
+      --simpleCompression=           The type of seekable compression to use on
+                                     pcap files. Zstd (don't use before 4.5.1)
+                                     will has better compression for less cpu
+                                     than glib. Valid values are: none, gzip,
+                                     zstd (>= 4.5.1) (default: none)
+                                     [$ARKIME_SIMPLECOMPRESSION]
       --dbBulkSize=                  ADVANCED - Number of bytes to bulk index
                                      at a time (default: 300000)
                                      [$ARKIME_DBBULKSIZE]
