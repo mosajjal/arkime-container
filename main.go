@@ -175,7 +175,7 @@ func runCapture() error {
 		LogFormat:       "[CAPTURE] : %time% - %msg%\n",
 	}
 	log.Infof("Starting the Capture process")
-	captureCmd = exec.Command(fmt.Sprintf("%v/bin/capture", pathPrefix), GeneralOptions.insecure, "-c", fmt.Sprintf("%v/etc/config.ini", pathPrefix))
+	captureCmd = exec.Command(fmt.Sprintf("%v/bin/capture", pathPrefix), GeneralOptions.insecure, "--host", GeneralOptions.CaptureHost, "-c", fmt.Sprintf("%v/etc/config.ini", pathPrefix))
 	captureCmd.Dir = fmt.Sprintf("%v", pathPrefix)
 	captureCmd.Stdout = captureLog.Writer()
 	captureCmd.Stderr = captureLog.Writer()
