@@ -246,6 +246,9 @@ default:
                                      [$ARKIME_NETFLOWVERSION]
       --netflowDestinations=         Semicolon ';' seperated list of netflow
                                      destinations [$ARKIME_NETFLOWDESTINATIONS]
+      --offlineDispatchAfter=        How many packets to read from offline pcap
+                                     files at once. (default: 2500)
+                                     [$ARKIME_OFFLINEDISPATCHAFTER]
       --spiDataMaxIndices=           Specify the max number of indices we
                                      calculate spidata for.
                                      ; ES will blow up if we allow the spiData
@@ -410,6 +413,8 @@ general:
                                      true) [$ARKIME_CREATEADMINUSER]
       --adminCreds=                  Administrator Credentials (default:
                                      admin:arkime) [$ARKIME_ADMINCREDS]
+      --captureHost=                 the --host passed to capture (default:
+                                     localhost) [$ARKIME_CAPTUREHOST]
       --esHealthcheckInterval=       Interval to check Elastic avalability
                                      (default: 60s)
                                      [$ARKIME_ESHEALTHCHECKINTERVAL]
