@@ -175,15 +175,23 @@ func runCapture() error {
 		LogFormat:       "[CAPTURE] : %time% - %msg%\n",
 	}
 	log.Infof("Starting the Capture process")
-	captureCmd = exec.Command(fmt.Sprintf("%v/bin/capture", pathPrefix), GeneralOptions.insecure, "--host", GeneralOptions.CaptureHost, "-c", fmt.Sprintf("%v/etc/config.ini", pathPrefix))
-	captureCmd.Dir = fmt.Sprintf("%v", pathPrefix)
-	captureCmd.Stdout = captureLog.Writer()
-	captureCmd.Stderr = captureLog.Writer()
+
+	cmd := exec.Command(fmt.Sprintf("%v/bin/capture", pathPrefix))
+	if GeneralOptions.insecure != "" {
+		cmd.Args = append(cmd.Args, GeneralOptions.insecure)
+	}
+	if GeneralOptions.CaptureHost != "" {
+		cmd.Args = append(cmd.Args, "--host", GeneralOptions.CaptureHost)
+	}
+	cmd.Args = append(cmd.Args, "-c", fmt.Sprintf("%v/etc/config.ini", pathPrefix))
+	cmd.Dir = fmt.Sprintf("%v", pathPrefix)
+	cmd.Stdout = captureLog.Writer()
+	cmd.Stderr = captureLog.Writer()
 	var err error
 	// Writing without a reader will deadlock so write in a goroutine
 	go func() {
-		defer captureCmd.Wait()
-		err = captureCmd.Start()
+		defer cmd.Wait()
+		err = cmd.Start()
 	}()
 	return err
 }
