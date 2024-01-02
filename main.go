@@ -122,7 +122,7 @@ func initElasticIndices() {
 
 func addAdminUser(Username, Password string) {
 	log.Infof("Adding Admin user with username: %v and password: %v", Username, Password)
-	Cmd := exec.Command(fmt.Sprintf("%v/bin/arkime_add_user.sh", pathPrefix), GeneralOptions.insecure, Username, "Admin User", Password, "--admin")
+	Cmd := exec.Command(fmt.Sprintf("%v/bin/arkime_add_user.sh", pathPrefix), GeneralOptions.insecure, Username, "Administrator", Password, "--admin")
 	out, err := Cmd.CombinedOutput()
 	if err != nil {
 		log.Warnf("%s failed with: %s", Cmd, out)
