@@ -27,7 +27,8 @@ services:
       - elasticsearch-net
 
   arkime:
-    image: ghcr.io/mosajjal/arkime-container:dev
+    build:
+      context: ..
     container_name: arkime
     network_mode: "host"
     command: ["--passwordSecret=Passw0rd", "--elasticsearch=http://127.0.0.1:9200", "--interface=lo", "--createAdminUser=true", "--skipTlsVerifiction", "--dropUser=root", "--manufURL=https://www.wireshark.org/download/automated/data/manuf"]
