@@ -441,10 +441,9 @@ general:
                                      push to ouiFile location defined in
                                      ArkimeOptions. empty means disabled
                                      (default:
-                                     https://raw.githubusercontent.com/wireshar-
+                                     https://www.wireshark.org/download/automat-
 
-                                     k/wireshark/master/manuf)
-                                     [$ARKIME_MANUFURL]
+                                     ed/data/manuf) [$ARKIME_MANUFURL]
       --geoLite2CountryURL=          Download GeoLite2 Country mmdb on startup
                                      and push to geoLite2Country location
                                      defined in ArkimeOptions. empty means
