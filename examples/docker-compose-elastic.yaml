@@ -30,7 +30,9 @@ services:
     image: ghcr.io/mosajjal/arkime-container:dev
     container_name: arkime
     network_mode: "host"
-    command: ["--passwordSecret=Passw0rd", "--elasticsearch=http://127.0.0.1:9200", "--interface=lo", "--createAdminUser=true", "--skipTlsVerifiction", "--dropUser=root", "--manufURL=https://www.wireshark.org/download/automated/data/manuf"]
+    environment:
+      - ARKIME_PCAPREADMETHOD=pcap-over-ip-server
+    command: ["--passwordSecret=Passw0rd", "--elasticsearch=http://127.0.0.1:9200", "--interface=dummy", "--createAdminUser=true", "--skipTlsVerifiction", "--dropUser=root", "--manufURL=https://www.wireshark.org/download/automated/data/manuf"]
     depends_on:
       elasticsearch-node1:
         condition: service_healthy

@@ -9,7 +9,7 @@ RUN go build -v -ldflags="-s -w" -o arkime-supervisor
 
 FROM ubuntu:22.04
 
-ENV VER=5.0.0
+ENV VER=5.0.1
 
 RUN apt update && \
     apt install -y curl wget libwww-perl libjson-perl ethtool libyaml-dev jq libmagic1 iproute2 liblua5.4-0 libmaxminddb0 libpcap0.8 libglib2.0-0 libyara8 librdkafka1 && \
