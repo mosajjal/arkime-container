@@ -1,5 +1,7 @@
 # Arkime (Moloch) Container Image and supervisor
 
+> NOTE: Now that Arkime (v5.5+) has an official Docker release, This project is no longer maintained. Please use the official Docker image instead.
+
 Arkime is a large scale, open source, indexed packet capture and search tool ([website](https://arkime.com))
 
 This tiny project aims to bring Arkime's powerful abilities to the cloud native world. `arkime-supervisor` is a Golang daemon running both capture and viewer functionality of Arkime and pulls logs from both viewer and capture processes into the containers `stdout`. It also handles initial Elasticsearch/Opensearch index creation, optionally adds default credentials and downloads necessery definition files to help Arkime work with no direct intraction with the container itself.

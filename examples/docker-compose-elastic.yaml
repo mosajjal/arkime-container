@@ -1,4 +1,3 @@
-version: '3'
 services:
   elasticsearch-node1:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
@@ -27,21 +26,30 @@ services:
       - elasticsearch-net
 
   arkime:
-    image: ghcr.io/mosajjal/arkime-container:dev
+    image: ghcr.io/mosajjal/arkime-container:v5.0.1
     container_name: arkime
-    network_mode: "host"
     environment:
       - ARKIME_PCAPREADMETHOD=pcap-over-ip-server
-    command: ["--passwordSecret=Passw0rd", "--elasticsearch=http://127.0.0.1:9200", "--interface=dummy", "--createAdminUser=true", "--skipTlsVerifiction", "--dropUser=root", "--manufURL=https://www.wireshark.org/download/automated/data/manuf"]
+      - ARKIME_BPF= # without emptying out the bpf option, pcap-over-ip does not work
+      - ARKIME_TCPSAVETIMEOUT=60
+      - ARKIME_OFFLINEDISPATCHAFTER=1
+      - ARKIME_VIEWURL=http://0.0.0.0:8005
+      - ARKIME_VIEWHOST=0.0.0.0
+      - ARKIME_USERAUTHIPS=0.0.0.0/0
+    command: ["--passwordSecret=Passw0rd", "--elasticsearch=http://elasticsearch-node1:9200", "--interface=dummy", "--createAdminUser=true", "--skipTlsVerifiction", "--dropUser=root", "--manufURL=https://www.wireshark.org/download/automated/data/manuf"]
+    ports:
+      - 8005:8005
+      - 57012:57012
     depends_on:
       elasticsearch-node1:
         condition: service_healthy
     volumes:
-      - arkime-data:/opt/arkime/raw
+      - ./arkime-data:/opt/arkime/raw
+    networks:
+      - elasticsearch-net
 
 volumes:
   elasticsearch-data1:
-  arkime-data:
 
 networks:
   elasticsearch-net:
